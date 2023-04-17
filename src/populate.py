@@ -33,7 +33,21 @@ customers = [row[0] for row in c.fetchall()]
 
 # Create a bunch of new orders
 for i in range(randint(15000, 16000)):
-    sql = "INSERT INTO [Orders] (CustomerId, EmployeeId, OrderDate, RequiredDate, ShippedDate, ShipVia, Freight, ShipName, ShipAddress, ShipCity, ShipRegion, ShipPostalCode, ShipCountry) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    sql = """
+        INSERT INTO [Orders] (CustomerId, 
+                            EmployeeId, 
+                            OrderDate, 
+                            RequiredDate, 
+                            ShippedDate, 
+                            ShipVia, 
+                            Freight, 
+                            ShipName, 
+                            ShipAddress, 
+                            ShipCity, 
+                            ShipRegion, 
+                            ShipPostalCode, 
+                            ShipCountry) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """
     location = rc(locations)
     order_date = random_date(
         datetime.strptime("2012-07-10", "%Y-%m-%d"), datetime.today()
@@ -58,7 +72,6 @@ for i in range(randint(15000, 16000)):
         location[5],  # ShipCountry
     )
     c.execute(sql, params)
-
 
 # Product.Id
 c.execute("select distinct ProductId, UnitPrice from [Products]")
@@ -95,7 +108,6 @@ c.execute("select sum(Quantity)*0.25+10, OrderId from [Order Details] group by O
 orders = [(row[0], row[1]) for row in c.fetchall()]
 for order in orders:
     c.execute("update [Orders] set Freight=? where OrderId=?", (order[0], order[1]))
-
 
 conn.commit()
 conn.close()
